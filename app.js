@@ -2,6 +2,7 @@ const rowsElement = document.querySelector('#ranking-rows');
 const countElement = document.querySelector('#ranking-count');
 const searchElement = document.querySelector('#player-search');
 const panelElement = document.querySelector('#ranking-panel');
+const tableScroll = document.querySelector('.table-scroll');
 const tabs = [...document.querySelectorAll('[role="tab"]')];
 let rankings = [];
 let position = 'Forwards';
@@ -29,6 +30,8 @@ function renderRows() {
   }
   rowsElement.replaceChildren(fragment);
   countElement.textContent = `Showing ${visible.length} of ${rankings.filter(row => row.position === position).length} ${position.toLocaleLowerCase()}`;
+  tableScroll.scrollTop = 0;
+  tableScroll.scrollLeft = 0;
 }
 
 function selectPosition(nextPosition) {

@@ -39,11 +39,17 @@ p { margin: .7rem 0 1rem; }
 .rank-controls input { width: min(17rem, 100%); padding: .59rem .75rem; border: 1px solid #8ca3aa; border-radius: .5rem; background: white; color: #172b3a; }
 .ranking-count { color: #445a66; font-size: .9rem; margin: .7rem 0; }
 .mobile-table-hint { display: none; color: #526773; font-size: .9rem; margin: 0 0 .45rem; }
-.table-scroll { max-height: 68vh; overflow: auto; border: 1px solid #cbd7d9; border-radius: .55rem; background: white; }
-table { border-collapse: collapse; width: 100%; min-width: 550px; font-variant-numeric: tabular-nums; }
-thead th { position: sticky; top: 0; z-index: 1; background: #e8eff0; color: #16394b; text-align: left; font-size: .82rem; text-transform: uppercase; letter-spacing: .07em; }
-th, td { padding: .65rem .8rem; border-bottom: 1px solid #e5ebed; }
-td:first-child { color: #506771; font-weight: 700; width: 5rem; }
+.table-scroll { width: 100%; max-width: 100%; height: min(34rem, 68vh); overflow: auto; overscroll-behavior: none; scrollbar-gutter: stable; border: 1px solid #a8bac2; border-radius: .4rem; background: white; }
+.table-scroll:focus-visible { outline: 3px solid #126b76; outline-offset: 3px; }
+table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 100%; min-width: 660px; font-variant-numeric: tabular-nums; }
+.rank-column { width: 8%; }
+.player-column { width: 37%; }
+.score-column { width: 14%; }
+.percentile-column { width: 19%; }
+.games-column { width: 22%; }
+thead th { position: sticky; top: 0; z-index: 1; background: #e8eff0; color: #16394b; text-align: left; font-size: .82rem; text-transform: uppercase; letter-spacing: .07em; box-shadow: 0 1px 0 #cbd7d9; }
+th, td { padding: .65rem .8rem; border-bottom: 1px solid #e5ebed; white-space: nowrap; }
+td:first-child { color: #506771; font-weight: 700; }
 td:nth-child(n+3), th:nth-child(n+3) { text-align: right; }
 tbody tr:nth-child(even) { background: #f8faf9; }
 tbody tr:hover { background: #edf5f3; }
