@@ -32,7 +32,7 @@ function renderRows() {
   countElement.textContent = `Showing ${visible.length} of ${rankings.filter(row => row.position === position).length} ${position.toLocaleLowerCase()}`;
   tableScroll.scrollTop = 0;
   tableScroll.scrollLeft = 0;
-  requestAnimationFrame(() => {
+  setTimeout(() => {
     tableScroll.scrollTop = 0;
     tableScroll.scrollLeft = 0;
   });
