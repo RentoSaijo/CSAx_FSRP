@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Full 2024–25 CSAx rankings for NHL forwards and defensemen, with technical details of the score.">
+  <title>2024–25 CSAx rankings</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#rankings">Skip to rankings</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <div>
+        <p class="eyebrow">Playing Tougher for One’s Size</p>
+        <h1>Full 2024–25 CSAx rankings</h1>
+        <p class="lede">Which NHL players make a greater physical impression than their height and weight would suggest?</p>
+      </div>
+      <nav aria-label="On this page">
+        <a href="#rankings">Rankings</a>
+        <a href="#technical">Technical details</a>
+        <a href="#sources">Sources</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="intro" aria-labelledby="reading-title">
+      <div>
+        <h2 id="reading-title">Reading the score</h2>
+        <p>CSAx compares a player’s recorded contact and puck-battle behavior with the physical profile expected from their listed size. Higher values indicate more physical presence <em>relative to size</em> within the same position and season. The score describes a pattern of play; it does not measure courage, skill, or overall player value.</p>
+      </div>
+      <aside class="scope-note">
+        <strong>Who appears here?</strong>
+        <p>351 forwards and 205 defensemen with at least 500 total regular-season NHL minutes and 150 matched five-on-five tracked minutes in 2024–25.</p>
+      </aside>
+    </section>
+
+    <section id="rankings" class="rankings" aria-labelledby="rankings-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">2024–25</p>
+          <h2 id="rankings-title">Player rankings</h2>
+        </div>
+        <p>Compare players only within their position. A percentile of 90 means the score exceeds roughly 90% of that position’s eligible player-seasons.</p>
+      </div>
+
+      <div class="rank-controls">
+        <div class="position-switch" role="tablist" aria-label="Player position">
+          <button id="forwards-tab" type="button" role="tab" aria-selected="true" aria-controls="ranking-panel" data-position="Forwards">Forwards <span>351</span></button>
+          <button id="defensemen-tab" type="button" role="tab" aria-selected="false" aria-controls="ranking-panel" data-position="Defensemen">Defensemen <span>205</span></button>
+        </div>
+        <label for="player-search">Find a player</label>
+        <input id="player-search" type="search" autocomplete="off" placeholder="Search by name">
+      </div>
+
+      <p id="ranking-count" class="ranking-count" aria-live="polite">Loading rankings…</p>
+      <div id="ranking-panel" role="tabpanel" aria-labelledby="forwards-tab">
+        <div class="table-scroll" tabindex="0" aria-label="Scrollable player rankings">
+          <table>
+            <thead><tr><th scope="col">Rank</th><th scope="col">Player</th><th scope="col">CSAx</th><th scope="col">Percentile</th><th scope="col">Tracked games</th></tr></thead>
+            <tbody id="ranking-rows"><tr><td colspan="5">Loading rankings…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <p class="ranking-note">Ranks include only players meeting the publication threshold. Percentiles use the wider eligible positional reference population. Scores and percentiles are displayed to two decimals. The 2024–25 defenseman model did not improve on a mean-size baseline, so its ordering is exploratory.</p>
+    </section>
+
+    <section id="technical" class="technical" aria-labelledby="technical-title">
+      <p class="eyebrow">For readers who want the calculation</p>
+      <h2 id="technical-title">Technical details</h2>
+      <p>The calculations below describe the fitted 2024–25 scores exactly as a procedure. Coefficients and transformations are learned separately for each position, season, and assessment fold, so there is no single universal list of numerical weights.</p>
+
+      <h3>1. Listed size</h3>
+      <p>Within each position-season reference population, standardize listed height <var>H</var> and weight <var>W</var>. Form their equal-weight combination, then standardize it again:</p>
+      <div class="equation" role="math" aria-label="z H equals H minus mean H over sample standard deviation H; z W equals W minus mean W over sample standard deviation W; C equals z H plus z W over square root of two; S equals C minus mean C over sample standard deviation C">
+        <span>z<sub>H,i</sub> = (H<sub>i</sub> − μ<sub>H</sub>) / s<sub>H</sub></span>
+        <span>z<sub>W,i</sub> = (W<sub>i</sub> − μ<sub>W</sub>) / s<sub>W</sub></span>
+        <span>C<sub>i</sub> = (z<sub>H,i</sub> + z<sub>W,i</sub>) / √2</span>
+        <span>S<sub>i</sub> = (C<sub>i</sub> − μ<sub>C</sub>) / s<sub>C</sub></span>
+      </div>
+      <p>Means and sample standard deviations come from all eligible native player-seasons in that position and season. <var>S</var> is the listed-size outcome; it is not the CSAx score.</p>
+
+      <h3>2. Behavior-predicted size and frame calibration</h3>
+      <p>For each position and season, a ridge model predicts <var>S</var> from direct contact and position-specific indirect features. For transformed predictors <var>z</var>, its fitted prediction and objective are:</p>
+      <div class="equation" role="math" aria-label="Predicted size equals intercept plus the sum of feature coefficients times transformed features; ridge minimizes mean squared prediction error plus lambda over two times the sum of squared feature coefficients">
+        <span>xS<sub>i</sub> = β<sub>0,−k</sub> + Σ<sub>j</sub> β<sub>j,−k</sub>z<sub>ij,−k</sub></span>
+        <span>min [Σ<sub>i</sub>(S<sub>i</sub> − β<sub>0</sub> − Σ<sub>j</sub>β<sub>j</sub>z<sub>ij</sub>)² / (2n) + λΣ<sub>j</sub>β<sub>j</sub>² / 2]</span>
+      </div>
+      <p>Five outer player-grouped folds give each player-season one prediction from a model that excluded that player. Within each outer training set, five inner player-grouped folds choose the ridge penalty by mean squared error from 20 values spaced logarithmically between 0.0001 and 100.</p>
+      <p>Training samples supply median imputation, removal of constant features, Yeo–Johnson transformations, and predictor standardization. Let <var>xS<sub>i</sub></var> be the outer-held-out ridge prediction. A linear calibration learned from inner held-out predictions in the outer training set gives the prediction normally associated with listed size <var>S<sub>i</sub></var>:</p>
+      <div class="equation" role="math" aria-label="m sub minus k of S i equals a sub minus k plus b sub minus k times S i; r i equals x S i minus m sub minus k of S i">
+        <span>m<sub>−k</sub>(S<sub>i</sub>) = a<sub>−k</sub> + b<sub>−k</sub>S<sub>i</sub></span>
+        <span>r<sub>i</sub> = xS<sub>i</sub> − m<sub>−k</sub>(S<sub>i</sub>)</span>
+      </div>
+      <p>The calibration prevents ordinary regression shrinkage from mechanically favoring smaller players. It uses no behavior from the outer assessment player.</p>
+
+      <h3>3. CSAx and percentile</h3>
+      <p>Center and standardize the held-out residuals within the native position-season reference. The percentile uses midranks, including half the players tied at the same residual:</p>
+      <div class="equation" role="math" aria-label="CSAx i equals r i minus mean reference residual divided by sample standard deviation of reference residuals; percentile i equals one hundred times count of reference residuals below r i plus half the count equal to r i, divided by N">
+        <span>CSAx<sub>i</sub> = (r<sub>i</sub> − r̄<sub>ref</sub>) / s<sub>r,ref</sub></span>
+        <span>Percentile<sub>i</sub> = 100 × [#{r<sub>j</sub> &lt; r<sub>i</sub>} + ½ #{r<sub>j</sub> = r<sub>i</sub>}] / N<sub>ref</sub></span>
+      </div>
+      <p>A score of +1 is one reference residual standard deviation above that position-season mean. The forward and defenseman scores have separate reference scales.</p>
+
+      <h3>4. Features and denominators</h3>
+      <p>All count rates equal 60 × count / matched five-on-five minutes. The six direct inputs in both positional models are hits delivered, hits received, opponent shots blocked, fights, contact penalties taken, and contact penalties drawn. Contact penalties count recorded infractions from a predefined contact-related whitelist; fighting is counted separately.</p>
+      <div class="feature-columns">
+        <div>
+          <h4>Forwards</h4>
+          <ul>
+            <li>Net-front attempt share: located unblocked attempts from 82 to 89 feet toward the attacking net and within eight feet of center ice, divided by all located unblocked attempts.</li>
+            <li>Tip/deflection share: typed tip or deflection shots divided by typed shots on goal, including goals.</li>
+            <li>Median distance from the net for located unblocked attempts, in feet.</li>
+            <li>Backhand share: typed backhand shots divided by typed shots on goal, including goals.</li>
+            <li>All Three Zones dump-in recoveries and forecheck pressures, each per 60 matched minutes.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Defensemen</h4>
+          <ul>
+            <li>All Three Zones clean defensive-zone retrievals and botched retrievals, each per 60 matched minutes.</li>
+            <li>Entry denial share: recorded denials divided by targeted entries.</li>
+          </ul>
+        </div>
+      </div>
+      <p>Undefined shares remain missing until training-sample imputation. The analysis requires at least 300 full-season NHL minutes and 150 matched tracked minutes; publication here additionally requires 500 full-season minutes. Recorded games are selected, not a complete census of every shift.</p>
+    </section>
+
+    <section id="sources" class="sources" aria-labelledby="sources-title">
+      <h2 id="sources-title">Sources and interpretation</h2>
+      <p>We combine NHL game and shift records with Corey Sznajder’s <a href="https://www.allthreezones.com/links.html">All Three Zones transition workbook</a>. See the <a href="https://www.allthreezones.com/player-cardsfaq.html">A3Z glossary</a> for tracked-event definitions. CSAx describes a learned physical profile, not the success of every individual play. Uneven tracking, differences in player roles, and the weak 2024–25 defenseman size prediction limit interpretation. This is independent research; no NHL or All Three Zones endorsement is implied.</p>
+      <p class="credit">Research by Rento Saijo, Jeff Moher, Sian Lee, and Yeongjun Seo. Connecticut College Funded Sophomore Research Program.</p>
+    </section>
+  </main>
+</body>
+</html>
