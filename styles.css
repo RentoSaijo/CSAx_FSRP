@@ -38,6 +38,7 @@ p { margin: .7rem 0 1rem; }
 .rank-controls label { font-weight: 700; }
 .rank-controls input { width: min(17rem, 100%); padding: .59rem .75rem; border: 1px solid #8ca3aa; border-radius: .5rem; background: white; color: #172b3a; }
 .ranking-count { color: #445a66; font-size: .9rem; margin: .7rem 0; }
+.mobile-table-hint { display: none; color: #526773; font-size: .9rem; margin: 0 0 .45rem; }
 .table-scroll { max-height: 68vh; overflow: auto; border: 1px solid #cbd7d9; border-radius: .55rem; background: white; }
 table { border-collapse: collapse; width: 100%; min-width: 550px; font-variant-numeric: tabular-nums; }
 thead th { position: sticky; top: 0; z-index: 1; background: #e8eff0; color: #16394b; text-align: left; font-size: .82rem; text-transform: uppercase; letter-spacing: .07em; }
@@ -64,6 +65,7 @@ tbody tr:hover { background: #edf5f3; }
   .section-heading > p { margin-top: .65rem; }
   .rank-controls label { width: 100%; }
   .rank-controls input { width: 100%; }
+  .mobile-table-hint { display: block; }
   .feature-columns > div + div { margin-top: 1.5rem; }
   .equation { font-size: .98rem; }
 }
